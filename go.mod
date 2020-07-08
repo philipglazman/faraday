@@ -8,9 +8,9 @@ require (
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.14.3
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/lightninglabs/lndclient v1.0.1-0.20200629081038-bb0726595df9
+	github.com/lightninglabs/lndclient v1.0.1-0.20200708220508-33580b267beb
 	github.com/lightninglabs/protobuf-hex-display v1.3.3-0.20191212020323-b444784ce75d
-	github.com/lightningnetwork/lnd v0.10.0-beta.rc6.0.20200615174244-103c59a4889f
+	github.com/lightningnetwork/lnd v0.10.3-beta
 	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.5.1
 	github.com/urfave/cli v1.20.0

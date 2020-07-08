@@ -93,10 +93,9 @@ func openEntries(tx lndclient.Transaction, convert msatToFiat, amtMsat int64,
 	channelID uint64, initiator bool) ([]*HarmonyEntry, error) {
 
 	ref := fmt.Sprintf("%v", channelID)
-	note := channelOpenNote(initiator, remote, capacity)
 
 	openEntry, err := newHarmonyEntry(
-		tx.Timestamp, amtMsat, entryType, tx.TxHash, ref, note,
+		tx.Timestamp, amtMsat, entryType, tx.TxHash, ref,
 		true, convert,
 	)
 	if err != nil {
@@ -115,10 +114,9 @@ func openEntries(tx lndclient.Transaction, convert msatToFiat, amtMsat int64,
 	// records as a debit.
 	feeMsat := invertedSatsToMsats(tx.Fee)
 
-	note = channelOpenFeeNote(channelID)
 	feeEntry, err := newHarmonyEntry(
 		tx.Timestamp, feeMsat, EntryTypeChannelOpenFee,
-		tx.TxHash, feeReference(tx.TxHash), note, true, convert,
+		tx.TxHash, feeReference(tx.TxHash), true, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -142,15 +140,10 @@ func closedChannelEntries(channel lndclient.ClosedChannel,
 	tx lndclient.Transaction, convert msatToFiat) ([]*HarmonyEntry, error) {
 
 	amtMsat := satsToMsat(tx.Amount)
-	note := channelCloseNote(
-		channel.ChannelID, channel.CloseType.String(),
-		channel.CloseInitiator.String(),
-	)
 
 	closeEntry, err := newHarmonyEntry(
 		tx.Timestamp, amtMsat, EntryTypeChannelClose,
-		channel.ClosingTxHash, channel.ClosingTxHash, note, true,
-		convert,
+		channel.ClosingTxHash, channel.ClosingTxHash, true, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -188,7 +181,7 @@ func onChainEntries(tx lndclient.Transaction, isSweep bool,
 
 	txEntry, err := newHarmonyEntry(
 		tx.Timestamp, amtMsat, entryType, tx.TxHash, tx.TxHash,
-		tx.Label, true, convert,
+		true, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -206,7 +199,7 @@ func onChainEntries(tx lndclient.Transaction, isSweep bool,
 
 	feeEntry, err := newHarmonyEntry(
 		tx.Timestamp, feeAmt, feeType, tx.TxHash,
-		feeReference(tx.TxHash), "", true, convert,
+		feeReference(tx.TxHash), true, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -251,14 +244,9 @@ func invoiceEntry(invoice lndclient.Invoice, circularReceipt bool,
 		eventType = EntryTypeCircularReceipt
 	}
 
-	note := invoiceNote(
-		invoice.Memo, invoice.Amount, invoice.AmountPaid,
-		invoice.IsKeysend,
-	)
-
 	return newHarmonyEntry(
 		invoice.SettleDate, int64(invoice.AmountPaid), eventType,
-		invoice.Hash.String(), invoice.Preimage.String(), note, false,
+		invoice.Hash.String(), invoice.Preimage.String(), false,
 		convert,
 	)
 }
@@ -303,7 +291,6 @@ func paymentEntry(payment paymentInfo, paidToSelf bool,
 
 	// Create a note for our payment. Since we have already checked that our
 	// payment is settled, we will not have a nil preimage.
-	note := paymentNote(payment.destination)
 	ref := paymentReference(payment.SequenceNumber, *payment.Preimage)
 
 	// Payment values are expressed as positive values over rpc, but they
@@ -312,7 +299,7 @@ func paymentEntry(payment paymentInfo, paidToSelf bool,
 
 	paymentEntry, err := newHarmonyEntry(
 		payment.settleTime, amt, paymentType,
-		payment.Hash.String(), ref, note, false, convert,
+		payment.Hash.String(), ref, false, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -329,7 +316,7 @@ func paymentEntry(payment paymentInfo, paidToSelf bool,
 
 	feeEntry, err := newHarmonyEntry(
 		payment.settleTime, feeAmt, feeType,
-		payment.Hash.String(), feeRef, note, false, convert,
+		payment.Hash.String(), feeRef, false, convert,
 	)
 	if err != nil {
 		return nil, err
@@ -362,7 +349,7 @@ func forwardingEntry(forward lndclient.ForwardingEvent,
 	note := forwardNote(forward.AmountMsatIn, forward.AmountMsatOut)
 
 	fwdEntry, err := newHarmonyEntry(
-		forward.Timestamp, 0, EntryTypeForward, txid, "", note,
+		forward.Timestamp, 0, EntryTypeForward, txid, note,
 		false, convert,
 	)
 	if err != nil {
@@ -376,7 +363,7 @@ func forwardingEntry(forward lndclient.ForwardingEvent,
 
 	feeEntry, err := newHarmonyEntry(
 		forward.Timestamp, int64(forward.FeeMsat),
-		EntryTypeForwardFee, txid, "", "", false, convert,
+		EntryTypeForwardFee, txid, "", false, convert,
 	)
 	if err != nil {
 		return nil, err

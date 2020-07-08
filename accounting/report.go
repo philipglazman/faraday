@@ -52,7 +52,7 @@ type HarmonyEntry struct {
 // changes to the amount will be made. Zero value entries will be recorded as
 // a credit.
 func newHarmonyEntry(ts time.Time, amountMsat int64, e EntryType, txid,
-	reference, note string, onChain bool, convert msatToFiat) (*HarmonyEntry,
+	reference string, onChain bool, convert msatToFiat) (*HarmonyEntry,
 	error) {
 
 	var (
@@ -76,7 +76,6 @@ func newHarmonyEntry(ts time.Time, amountMsat int64, e EntryType, txid,
 		FiatValue: fiat,
 		TxID:      txid,
 		Reference: reference,
-		Note:      note,
 		Type:      e,
 		OnChain:   onChain,
 		Credit:    credit,
