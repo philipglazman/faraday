@@ -213,9 +213,9 @@ func filterPayments(startTime, endTime time.Time,
 
 		// Skip the payment if the oldest settle time is not within the
 		// range we are looking at.
-		if !inRange(payment.settleTime, startTime, endTime) {
-			continue
-		}
+		//if !inRange(payment.settleTime, startTime, endTime) {
+		//	continue
+		//}
 
 		// Add a settled payment to our set of settled payments with its
 		// timestamp.

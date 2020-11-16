@@ -89,20 +89,20 @@ func onChainReportWithPrices(cfg *OnChainConfig, getPrice msatToFiat) (Report,
 		channelOpens[outpoint.Hash.String()] = closedChannel
 	}
 
-	// Finally, get our list of known sweeps from lnd so that we can
-	// identify them separately to other on chain transactions.
-	sweeps, err := cfg.ListSweeps()
-	if err != nil {
-		return nil, err
-	}
-
-	isSweep := make(map[string]bool, len(sweeps))
-	for _, sweep := range sweeps {
-		isSweep[sweep] = true
-	}
+	//// Finally, get our list of known sweeps from lnd so that we can
+	//// identify them separately to other on chain transactions.
+	//sweeps, err := cfg.ListSweeps()
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//isSweep := make(map[string]bool, len(sweeps))
+	//for _, sweep := range sweeps {
+	//	isSweep[sweep] = true
+	//}
 
 	return onChainReport(
-		filtered, getPrice, openChannels, isSweep, channelOpens,
+		filtered, getPrice, openChannels, nil, channelOpens,
 		channelCloses,
 	)
 }
@@ -167,13 +167,13 @@ func onChainReport(txns []lndclient.Transaction, priceFunc msatToFiat,
 			continue
 		}
 
-		// Finally, if the transaction is unrelated to channel opens or
-		// closes, we create a generic on chain entry for it. We check
-		// our list of known sweeps for this tx so that we can separate
-		// it our from regular chain sends.
-		isSweep := sweeps[txn.TxHash]
+		//// Finally, if the transaction is unrelated to channel opens or
+		//// closes, we create a generic on chain entry for it. We check
+		//// our list of known sweeps for this tx so that we can separate
+		//// it our from regular chain sends.
+		//isSweep := sweeps[txn.TxHash]
 
-		entries, err := onChainEntries(txn, isSweep, priceFunc)
+		entries, err := onChainEntries(txn, false, priceFunc)
 		if err != nil {
 			return nil, err
 		}

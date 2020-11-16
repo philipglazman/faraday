@@ -92,7 +92,7 @@ func NewOnChainConfig(ctx context.Context, lnd lndclient.LndServices, startTime,
 		},
 		StartTime:   startTime,
 		EndTime:     endTime,
-		DisableFiat: disableFiat,
+		DisableFiat: true,
 	}
 }
 
@@ -130,6 +130,6 @@ func NewOffChainConfig(ctx context.Context, lnd lndclient.LndServices,
 		OwnPubKey:   ownPubkey,
 		StartTime:   startTime,
 		EndTime:     endTime,
-		DisableFiat: disableFiat,
+		DisableFiat: true,
 	}
 }
